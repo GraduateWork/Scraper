@@ -2,7 +2,7 @@ import { launch, Browser, Page } from 'puppeteer';
 
 import { Film } from './interfaces';
 
-export default class Scraper {
+export default class FilmsScraper {
   private browser: Promise<Browser>;
   private url: string;
 
@@ -11,16 +11,16 @@ export default class Scraper {
     this.url = 'https://afisha.tut.by/film';
   }
 
-  public async getData() {
+  public async getData(): Promise<Film[]> {
     const links = await this.getLinks();
     const page = await (await this.browser).newPage();
     const films: Film[] = [];
     for (const link of links) {
       const film = await this.getFilm(link, page);
       films.push(film);
-      console.log(film);
     }
     page.close();
+    return films;
   }
 
   private async getFilm(link: string, page: Page): Promise<Film> {
@@ -82,7 +82,7 @@ export default class Scraper {
 
       const getDescription = () => {
         // description doesn't have a tag
-        let descriptionElement = document.querySelector('#event-description');
+        const descriptionElement = document.querySelector('#event-description');
         let description = '';
         if (descriptionElement) {
           if (descriptionElement.childNodes.length >= 2) {
