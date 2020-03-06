@@ -1,0 +1,23 @@
+{
+  "name": "scraping",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "start": "node dist/index.js",
+    "dev": "npm run build && npm run start"
+  },
+  "author": "Anton Bakatovich",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^2.1.1",
+    "tslint": "^5.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.8",
+    "@types/puppeteer": "^2.0.1",
+    "typescript": "^3.6.3"
+  }
+}
