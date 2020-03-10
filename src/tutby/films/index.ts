@@ -9,6 +9,10 @@ export default class FilmsScraper {
   constructor() {
     this.browser = launch({
       headless: false,
+      args : [
+        '--no-sandbox',
+        '--disable-setuid-sandbox'
+      ]
     });
     this.url = 'https://afisha.tut.by/film';
   }
