@@ -4,11 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npm run tsc",
-    "tsc": "tsc",
-    "build": "tsc -p .",
-    "start": "npm run build && node dist/index.js",
-    "dev": "npm run build && npm run start"
+    "build-ts": "tsc",
+    "postinstall": "npm run build-ts",
+    "start": "npm run serve",
+    "serve": "node dist/server.js"
   },
   "author": "Anton Bakatovich",
   "license": "ISC",
