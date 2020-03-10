@@ -7,7 +7,9 @@ export default class FilmsScraper {
   private url: string;
 
   constructor() {
-    this.browser = launch();
+    this.browser = launch({
+      headless: false,
+    });
     this.url = 'https://afisha.tut.by/film';
   }
 
