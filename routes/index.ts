@@ -14,6 +14,7 @@ router.get('/films', async (request, response) => {
     response.sendStatus(202);
     filmsStatus = Status.Progress;
     films = await scraper.getData();
+    console.log(films.length);
     filmsStatus = Status.Finish;
   } else if (filmsStatus === Status.Progress) {
     response.sendStatus(202);
