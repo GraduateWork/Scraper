@@ -23,7 +23,6 @@ export default class FilmsScraper {
     for (const link of links) {
       const film = await this.getFilm(link, page);
       films.push(film);
-      console.log(film);
     }
     page.close();
     return films;
