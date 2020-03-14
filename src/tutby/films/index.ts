@@ -1,17 +1,10 @@
-import { launch, Browser, Page } from 'puppeteer';
+import { Browser, Page } from 'puppeteer';
 
 import { Film } from './interfaces';
 export default class FilmsScraper {
-  private browser: Promise<Browser>;
   private url: string;
 
-  constructor() {
-    this.browser = launch({
-      args : [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-      ],
-    });
+  constructor(private browser: Promise<Browser>) {
     this.url = 'https://afisha.tut.by/film';
   }
 
@@ -23,7 +16,7 @@ export default class FilmsScraper {
       const film = await this.getFilm(link, page);
       films.push(film);
     }
-    page.close();
+    await page.close();
     return films;
   }
 
@@ -125,7 +118,7 @@ export default class FilmsScraper {
         return href;
       });
     });
-    page.close();
+    await page.close();
     return links;
   }
 }
