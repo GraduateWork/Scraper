@@ -1,7 +1,6 @@
 import { launch, Browser, Page } from 'puppeteer';
 
 import { Film } from './interfaces';
-
 export default class FilmsScraper {
   private browser: Promise<Browser>;
   private url: string;
@@ -11,7 +10,7 @@ export default class FilmsScraper {
       args : [
         '--no-sandbox',
         '--disable-setuid-sandbox',
-      ]
+      ],
     });
     this.url = 'https://afisha.tut.by/film';
   }
@@ -43,7 +42,7 @@ export default class FilmsScraper {
 
       const getGenres = () => {
         const genresElements = document.querySelectorAll('.genre > p > a');
-        const genres: string[] = []
+        const genres: string[] = [];
         genresElements.forEach(genre => {
           genres.push(genre.textContent as string);
         });
@@ -91,8 +90,8 @@ export default class FilmsScraper {
         let description = '';
         if (descriptionElement) {
           if (descriptionElement.childNodes.length >= 2) {
-            description = descriptionElement.childNodes[2].textContent ? 
-              descriptionElement.childNodes[2].textContent.trim() : 
+            description = descriptionElement.childNodes[2].textContent ?
+              descriptionElement.childNodes[2].textContent.trim() :
               '';
           }
         }
@@ -100,6 +99,7 @@ export default class FilmsScraper {
       }
 
       return {
+        type: 'film',
         title: getTitle(),
         imgSrc: getImgSrc(),
         genres: getGenres(),
@@ -120,7 +120,7 @@ export default class FilmsScraper {
     const page = await (await this.browser).newPage();
     await page.goto(this.url);
     const links = await page.$$eval('#events-block > ul > li > a.name', (elements) => {
-      return elements.map((a) => {
+      return elements.map(a => {
         const href = (a as HTMLAnchorElement).href;
         return href;
       });
