@@ -57,7 +57,7 @@ export default class FilmsScraper {
         return duration ? duration.textContent as string : '';
       }
 
-      const getEndDate = () => {
+      const getEndTime = () => {
         const endDate = document.querySelector('.date');
         return endDate ? endDate.textContent as string : '';
       }
@@ -99,7 +99,8 @@ export default class FilmsScraper {
         year: getYear(),
         countries: getCountries(),
         duration: getDuration(),
-        endDate: getEndDate(),
+        startTime: '',
+        endTime: getEndTime(),
         director: getDirector(),
         cast: getCast(),
         rating: getRating(),
