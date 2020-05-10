@@ -22,16 +22,16 @@ export default class FilmsScraper {
 
   private async getFilm(link: string, page: Page): Promise<Film> {
     await page.goto(link, { waitUntil: 'domcontentloaded' });
-    const film = await page.evaluate(() => {
+    const film = await page.evaluate((source: string) => {
       const getTitle = () => {
         const title = document.querySelector('#event-name');
         return title ? (title.textContent as string).toString().trim() : '';
-      }
+      };
 
       const getImgSrc = () => {
         const imgSrc = document.querySelector('.main_image');
         return imgSrc ? (imgSrc as HTMLImageElement).src : '';
-      }
+      };
 
       const getGenres = () => {
         const genresElements = document.querySelectorAll('.genre > p > a');
@@ -40,42 +40,42 @@ export default class FilmsScraper {
           genres.push(genre.textContent as string);
         });
         return genres.length >= 1 ? genres.join(', ') : '';
-      }
+      };
 
       const getYear = () => {
         const year = document.querySelector('.year');
         return year ? year.textContent as string : '';
-      }
+      };
 
       const getCountries = () => {
         const countries = document.querySelector('table.movie_info > tbody > tr > td.author');
         return countries ? countries.textContent as string : '';
-      }
+      };
 
       const getDuration = () => {
         const duration = document.querySelector('.duration');
         return duration ? duration.textContent as string : '';
-      }
+      };
 
       const getEndTime = () => {
         const endDate = document.querySelector('.date');
         return endDate ? endDate.textContent as string : '';
-      }
+      };
 
       const getDirector = () => {
         const director = document.querySelector('td.post.b-event-post > p:first-of-type');
         return director ? director.textContent as string : '';
-      }
+      };
 
       const getCast = () => {
         const cast = document.querySelector('td.post.b-event-post > p:last-of-type');
         return cast ? cast.textContent as string : '';
-      }
+      };
 
       const getRating = () => {
         const rating = document.querySelector('.IMDb > b');
         return rating ? rating.textContent as string : '';
-      }
+      };
 
       const getDescription = () => {
         // description doesn't have a tag
@@ -89,10 +89,11 @@ export default class FilmsScraper {
           }
         }
         return description;
-      }
+      };
 
       return {
         type: 'film',
+        source,
         title: getTitle(),
         imgSrc: getImgSrc(),
         genres: getGenres(),
@@ -106,7 +107,7 @@ export default class FilmsScraper {
         rating: getRating(),
         description: getDescription(),
       } as Film;
-    });
+    }, link);
     return film;
   }
 
