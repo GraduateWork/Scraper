@@ -1,6 +1,8 @@
 import { Browser, Page } from 'puppeteer';
 
 import { Film } from './interfaces';
+import { BaseEvent } from '../../interfaces';
+
 export default class FilmsScraper {
   private url: string;
 
@@ -23,15 +25,48 @@ export default class FilmsScraper {
   private async getFilm(link: string, page: Page): Promise<Film> {
     await page.goto(link, { waitUntil: 'domcontentloaded' });
     const film = await page.evaluate((source: string) => {
+      // BASE EVENT
+
       const getTitle = () => {
         const title = document.querySelector('#event-name');
         return title ? (title.textContent as string).toString().trim() : '';
+      };
+
+      const getEndTime = () => {
+        const endDate = document.querySelector('.date');
+        return endDate ? endDate.textContent as string : '';
       };
 
       const getImgSrc = () => {
         const imgSrc = document.querySelector('.main_image');
         return imgSrc ? (imgSrc as HTMLImageElement).src : '';
       };
+
+      const getDescription = () => {
+        // description doesn't have a tag
+        const descriptionElement = document.querySelector('#event-description');
+        let description = '';
+        if (descriptionElement) {
+          if (descriptionElement.childNodes.length >= 2) {
+            description = descriptionElement.childNodes[2].textContent ?
+              descriptionElement.childNodes[2].textContent.trim() :
+              '';
+          }
+        }
+        return description;
+      };
+
+      const baseEvent = {
+        type: 'film',
+        source,
+        title: getTitle(),
+        startTime: '',
+        endTime: getEndTime(),
+        imgSrc: getImgSrc(),
+        description: getDescription(),
+      } as BaseEvent;
+
+      // FILM
 
       const getGenres = () => {
         const genresElements = document.querySelectorAll('.genre > p > a');
@@ -57,11 +92,6 @@ export default class FilmsScraper {
         return duration ? duration.textContent as string : '';
       };
 
-      const getEndTime = () => {
-        const endDate = document.querySelector('.date');
-        return endDate ? endDate.textContent as string : '';
-      };
-
       const getDirector = () => {
         const director = document.querySelector('td.post.b-event-post > p:first-of-type');
         return director ? director.textContent as string : '';
@@ -77,36 +107,15 @@ export default class FilmsScraper {
         return rating ? rating.textContent as string : '';
       };
 
-      const getDescription = () => {
-        // description doesn't have a tag
-        const descriptionElement = document.querySelector('#event-description');
-        let description = '';
-        if (descriptionElement) {
-          if (descriptionElement.childNodes.length >= 2) {
-            description = descriptionElement.childNodes[2].textContent ?
-              descriptionElement.childNodes[2].textContent.trim() :
-              '';
-          }
-        }
-        return description;
-      };
-
-      return {
-        type: 'film',
-        source,
-        title: getTitle(),
-        imgSrc: getImgSrc(),
+      return Object.assign(baseEvent, {
         genres: getGenres(),
         year: getYear(),
         countries: getCountries(),
         duration: getDuration(),
-        startTime: '',
-        endTime: getEndTime(),
         director: getDirector(),
         cast: getCast(),
         rating: getRating(),
-        description: getDescription(),
-      } as Film;
+      } as Film);
     }, link);
     return film;
   }
